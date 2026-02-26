@@ -1,24 +1,78 @@
-# Code Converter
+# 8-Bit Binary ↔ Gray Code Converter (FSM Architecture)
 
-A versatile tool for converting code between different programming languages — designed to help developers translate, understand, and reuse code more efficiently.
+## 📌 Overview
 
-> ⚠️ **Note:** This repository currently contains Verilog source files. Update this README as the project evolves with additional code and language support.
+This project implements an **8-bit Binary to Gray** and **Gray to Binary** converter using a structured hardware architecture in Verilog.
 
----
+Design constraints followed:
 
-## 🚀 Overview
-
-**Code Converter** is a utility that enables easy transformation of source code from one programming language to another. It can be helpful for learning, rapid prototyping, refactoring legacy code, and understanding logic across languages.
-
----
-
-## 🧩 Features
-
-- 🔄 **Language Conversion** — Convert code between languages (planned/enhanced over time)
-- 🛠 **Modular Design** — Easy to extend to support different languages
-- 📦 **Verilog Support** — Initial code present in Verilog  
-*(Add more languages as the project grows)*
+- Only **1 XOR gate**
+- 8-bit **PIPO Registers (R1, R2)**
+- Two 1-bit registers (R3, R4)
+- **Tri-state 8-bit bus**
+- Bit-selector MUXes
+- 3-bit down counter (7 → 0)
+- **Moore FSM Control Unit**
+- Verified using a **Testbench**
 
 ---
 
-## 📂 Repository Structure
+## 🔧 Hardware Components
+
+- **R1** – Stores input number  
+- **R2** – Stores converted output  
+- **R3, R4** – Hold bits for XOR operation  
+- **Single XOR gate** – Performs bitwise conversion  
+- **3-bit Down Counter** – Controls bit position  
+- **Tri-state Bus** – Prevents bus contention  
+- **MUXes** – Select required bits  
+- **Moore FSM** – Controls full process  
+
+---
+
+## 🔄 Conversion Logic
+
+### Binary → Gray
+- MSB copied directly
+- Gray[i] = Binary[i+1] XOR Binary[i]
+
+### Gray → Binary
+- MSB copied directly
+- Binary[i] = Binary[i+1] XOR Gray[i]
+
+---
+
+## 🎛 Control Unit
+
+Inputs:
+- `Start`
+- `Convert` (0 → Bin→Gray, 1 → Gray→Bin)
+- `Clock`
+
+Outputs:
+- Register control signals
+- `Done` (High when conversion completes)
+
+When `Start = 0`, R2 holds `8'bzzzzzzzz`.
+
+---
+
+## 🧪 Verification
+
+A Verilog **testbench** is written to:
+
+- Apply Binary input
+- Apply Gray input
+- Toggle Convert signal
+- Verify correct output
+- Check Done signal
+
+---
+
+## 🎯 Objective
+
+To implement a **resource-constrained, FSM-controlled code converter architecture** using proper bus management and sequential bit processing.
+
+---
+
+**Author:** Advaith Manoj  
